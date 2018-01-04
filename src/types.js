@@ -4,10 +4,11 @@ const typeList = [
 	'number',
 	'integer',
 	'boolean',
-	'object',
 	'array',
 	'null',
 	'any',
+
+	'object',
 ];
 
 const boolList = [
@@ -42,7 +43,14 @@ const methodsList = [
 	'oneOf',
 	'allOf',
 	'not',
+
+	'instanceof',
+	'typeof',
 ];
+
+const aliases = {
+	func: { name: 'instanceof', value: 'Function' },
+};
 
 const createTypes = function createTypes(spec = {}) {
 	return new Proxy(spec, {
@@ -52,6 +60,12 @@ const createTypes = function createTypes(spec = {}) {
 			}
 
 			const proxy = createTypes(target);
+
+			if (aliases[prop]) {
+				const alias = aliases[prop];
+				proxy[alias.name] = alias.value;
+				return proxy;
+			}
 
 			if (~typeList.indexOf(prop)) {
 				if (prop === 'object') {

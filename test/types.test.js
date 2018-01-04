@@ -41,4 +41,16 @@ describe('types', function () {
 	test('chaining', function () {
 		expect(types.number.multipleOf(3)).toEqual({ type: 'number', multipleOf: 3 });
 	});
+
+	test('typeof', function () {
+		expect(types.typeof('function')).toEqual({ typeof: 'function' });
+	});
+
+	test('instanceof', function () {
+		expect(types.instanceof('Foo')).toEqual({ instanceof: 'Foo' });
+	});
+
+	test('func', function () {
+		expect(types.func).toEqual({ instanceof: 'Function' });
+	});
 });
