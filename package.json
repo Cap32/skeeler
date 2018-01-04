@@ -8,7 +8,7 @@
     "lib"
   ],
   "scripts": {
-    "start": "yarn test -- --watchAll",
+    "start": "yarn test --watchAll",
     "test": "cross-env NODE_ENV=development jest",
     "format": "prettier-eslint --write \"+(src|test)/**/*.js\"",
     "prebuild": "rimraf lib",
