@@ -23,7 +23,7 @@ export default new Skeeler({
       corge: types.string,
     }),
     types.string.enum(['grault', 'garply']),
-    types.bool,
+    types.boolean,
   ]),
 
   waldo: types
