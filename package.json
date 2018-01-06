@@ -16,7 +16,7 @@
     "preversion": "yarn test && yarn build"
   },
   "author": "cap32",
-  "repository": "cantonjs/skeeler",
+  "repository": "Cap32/skeeler",
   "engines": {
     "node": ">=4.2.1"
   },
