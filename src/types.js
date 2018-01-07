@@ -1,6 +1,7 @@
 import { __state, __values, __isType } from './symbols';
 import getValue from './getValue';
 import createState from './createState';
+import { getTypeExtensions } from './TypeExtensions';
 
 const typeList = [
 	'string',
@@ -53,14 +54,24 @@ const aliases = {
 	func: { key: 'instanceof', value: 'Function' },
 };
 
-const createTypes = function createTypes(spec = {}) {
+const createTypes = function createTypes(spec = {}, extensions) {
 	return new Proxy(spec, {
 		get(target, prop) {
 			if (typeof target[prop] !== 'undefined') {
 				return target[prop];
 			}
 
-			const state = createState(createTypes(target));
+			const state = createState(createTypes(target, extensions));
+
+			if (extensions.has(prop)) {
+				const value = extensions.get(prop);
+				if (typeof value === 'function') {
+					return value(state, prop);
+				}
+
+				state[prop] = value;
+				return state;
+			}
 
 			if (aliases[prop]) {
 				const alias = aliases[prop];
@@ -100,11 +111,12 @@ const createTypes = function createTypes(spec = {}) {
 
 export default new Proxy({}, {
 	get(target, prop) {
+		const extensions = getTypeExtensions();
 		const types = createTypes(Object.defineProperties({}, {
 			[__values]: { get() { return getValue(this[__state]); } },
 			[__state]: { value: {} },
 			[__isType]: { value: true },
-		}));
+		}), extensions);
 		return types[prop];
 	},
 });
