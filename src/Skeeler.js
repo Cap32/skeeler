@@ -21,18 +21,10 @@ const toJson = function toJson(spec) {
 
 export default class Skeeler {
 	constructor(spec) {
-		this._spec = spec;
-	}
-
-	__getValue() {
-		return this.__values || (this.__values = getValue(this._spec));
-	}
-
-	toJson() {
-		return toJson({ properties: this.__getValue() });
+		this.value = getValue(spec);
 	}
 
 	toObject(type = 'json') {
-		if (type === 'json') { return this.toJson(); }
+		if (type === 'json') { return toJson({ properties: this.value }); }
 	}
 }
