@@ -6,10 +6,9 @@ const typeList = [
 	'number',
 	'integer',
 	'boolean',
-	'array',
 	'null',
 	'any',
-
+	'array',
 	'object',
 ];
 
@@ -26,7 +25,6 @@ const methodsList = [
 	'maxLength',
 	'minLength',
 	'pattern',
-	'items',
 	'additionalItems',
 	'maxItems',
 	'minItems',
@@ -75,14 +73,19 @@ const createTypes = function createTypes(spec = {}) {
 			}
 
 			if (~typeList.indexOf(prop)) {
+				setState('type', prop);
 				if (prop === 'object') {
 					return (properties = {}) => {
-						setState('type', 'object');
 						setState('properties', properties);
 						return proxy;
 					};
 				}
-				setState('type', prop);
+				else if (prop === 'array') {
+					return (items = []) => {
+						setState('items', items);
+						return proxy;
+					};
+				}
 				return proxy;
 			}
 			else if (~boolList.indexOf(prop)) {
