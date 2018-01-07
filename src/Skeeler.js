@@ -1,9 +1,9 @@
-import { __values, __isType } from './symbols';
 import traverse from 'traverse';
+import getValue from './getValue';
 
-const getRequireds = function getRequireds(spec) {
+const toJson = function toJson(spec) {
 	const trav = traverse(spec);
-	return trav.map(function (val) {
+	return trav.map(function () {
 		if (this.key === 'required' &&
 			this.parent &&
 			this.parent.parent &&
@@ -16,9 +16,6 @@ const getRequireds = function getRequireds(spec) {
 			trav.set('required', required);
 			this.parent.parent.parent.node.required = required;
 		}
-		else {
-			if (val[__isType]) { this.update(val[__values]); }
-		}
 	});
 };
 
@@ -27,8 +24,15 @@ export default class Skeeler {
 		this._spec = spec;
 	}
 
+	__getValue() {
+		return this.__values || (this.__values = getValue(this._spec));
+	}
+
 	toJson() {
-		const json = getRequireds({ properties: this._spec });
-		return json;
+		return toJson({ properties: this.__getValue() });
+	}
+
+	toObject(type = 'json') {
+		if (type === 'json') { return this.toJson(); }
 	}
 }
