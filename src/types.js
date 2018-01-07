@@ -1,5 +1,6 @@
 import { __state, __values, __isType } from './symbols';
 import getValue from './getValue';
+import createState from './createState';
 
 const typeList = [
 	'string',
@@ -59,43 +60,38 @@ const createTypes = function createTypes(spec = {}) {
 				return target[prop];
 			}
 
-			const proxy = createTypes(target);
-
-			const setState = function setState(key, value) {
-				proxy[__state][key] = value;
-				proxy[key] = value;
-			};
+			const state = createState(createTypes(target));
 
 			if (aliases[prop]) {
 				const alias = aliases[prop];
-				setState(alias.key, alias.value);
-				return proxy;
+				state[alias.key] = alias.value;
+				return state;
 			}
 
 			if (~typeList.indexOf(prop)) {
-				setState('type', prop);
+				state.type = prop;
 				if (prop === 'object') {
 					return (properties = {}) => {
-						setState('properties', properties);
-						return proxy;
+						state.properties = properties;
+						return state;
 					};
 				}
 				else if (prop === 'array') {
 					return (items) => {
-						items && setState('items', items);
-						return proxy;
+						if (items) { state.items = items; }
+						return state;
 					};
 				}
-				return proxy;
+				return state;
 			}
 			else if (~boolList.indexOf(prop)) {
-				setState(prop, true);
-				return proxy;
+				state[prop] = true;
+				return state;
 			}
 			else if (~methodsList.indexOf(prop)) {
 				return (value) => {
-					setState(prop, value);
-					return proxy;
+					state[prop] = value;
+					return state;
 				};
 			}
 		},
