@@ -6,6 +6,24 @@ describe('skeeler', function () {
 		const skeeler = new Skeeler({
 			foo: types.string,
 		});
-		expect(skeeler.toJson()).toEqual({ foo: { type: 'string' } });
+		expect(skeeler.toJson()).toEqual({
+			properties: { foo: { type: 'string' } },
+		});
+	});
+
+	test('required', function () {
+		const skeeler = new Skeeler({
+			foo: types.string.required,
+			bar: types.number,
+			baz: types.boolean.required,
+		});
+		expect(skeeler.toJson()).toEqual({
+			properties: {
+				foo: { type: 'string' },
+				bar: { type: 'number' },
+				baz: { type: 'boolean' },
+			},
+			required: ['foo', 'baz'],
+		});
 	});
 });

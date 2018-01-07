@@ -1,6 +1,6 @@
 
 import { __state, __values, __isType } from './symbols';
-import getValue from './getValue';
+import traverse from 'traverse';
 
 const typeList = [
 	'string',
@@ -51,6 +51,12 @@ const methodsList = [
 
 const aliases = {
 	func: { key: 'instanceof', value: 'Function' },
+};
+
+const getValue = function getValue(value) {
+	return traverse(value).map(function (val) {
+		if (val[__isType]) { this.update(val[__values]); }
+	});
 };
 
 const createTypes = function createTypes(spec = {}) {
