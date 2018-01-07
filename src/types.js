@@ -1,4 +1,6 @@
 
+import { __state, __values } from './symbols';
+
 const typeList = [
 	'string',
 	'number',
@@ -49,7 +51,7 @@ const methodsList = [
 ];
 
 const aliases = {
-	func: { name: 'instanceof', value: 'Function' },
+	func: { key: 'instanceof', value: 'Function' },
 };
 
 const createTypes = function createTypes(spec = {}) {
@@ -61,30 +63,35 @@ const createTypes = function createTypes(spec = {}) {
 
 			const proxy = createTypes(target);
 
+			const setState = function setState(key, value) {
+				proxy[__state][key] = value;
+				proxy[key] = value;
+			};
+
 			if (aliases[prop]) {
 				const alias = aliases[prop];
-				proxy[alias.name] = alias.value;
+				setState(alias.key, alias.value);
 				return proxy;
 			}
 
 			if (~typeList.indexOf(prop)) {
 				if (prop === 'object') {
 					return (properties = {}) => {
-						proxy.type = 'object';
-						proxy.properties = properties;
+						setState('type', 'object');
+						setState('properties', properties);
 						return proxy;
 					};
 				}
-				proxy.type = prop;
+				setState('type', prop);
 				return proxy;
 			}
 			else if (~boolList.indexOf(prop)) {
-				proxy[prop] = true;
+				setState(prop, true);
 				return proxy;
 			}
 			else if (~methodsList.indexOf(prop)) {
 				return (value) => {
-					proxy[prop] = value;
+					setState(prop, value);
 					return proxy;
 				};
 			}
@@ -94,7 +101,16 @@ const createTypes = function createTypes(spec = {}) {
 
 export default new Proxy({}, {
 	get(target, prop) {
-		const types = createTypes();
+		const types = createTypes(Object.defineProperties({}, {
+			[__values]: {
+				get() {
+					return this[__state];
+				},
+			},
+			[__state]: {
+				value: {},
+			},
+		}));
 		return types[prop];
 	},
 });

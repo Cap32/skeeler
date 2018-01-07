@@ -1,4 +1,5 @@
 import types from '../src/types';
+import { __values } from '../src/symbols';
 
 describe('types', function () {
 	test('string', function () {
@@ -52,5 +53,11 @@ describe('types', function () {
 
 	test('func', function () {
 		expect(types.func).toEqual({ instanceof: 'Function' });
+	});
+
+	test('__values', function () {
+		expect(types.string.required[__values])
+			.toEqual({ type: 'string', required: true })
+		;
 	});
 });
