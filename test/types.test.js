@@ -1,7 +1,7 @@
 import types from '../src/types';
 import { __values } from '../src/symbols';
 
-describe('types', function () {
+describe('setting types', function () {
 	test('string', function () {
 		expect(types.string).toEqual({ type: 'string' });
 	});
@@ -59,9 +59,28 @@ describe('types', function () {
 	test('func', function () {
 		expect(types.func).toEqual({ instanceof: 'Function' });
 	});
+});
 
-	test('__values', function () {
-		expect(types.string.required[__values])
-			.toEqual({ type: 'string', required: true });
+describe('getting types values', function () {
+	test('typeof __values should be object', function () {
+		expect(typeof types.string.required[__values]).toBe('object');
+	});
+
+	test('values should be plain json', function () {
+		const json = types.string.required[__values];
+		expect(json).toEqual({ type: 'string', required: true });
+		expect(typeof json[__values]).toBe('undefined');
+	});
+
+	test('array', function () {
+		const json = types.array(types.string)[__values];
+		expect(json).toEqual({ type: 'array', items: { type: 'string' } });
+		expect(typeof json.items[__values]).toBe('undefined');
+	});
+
+	test('object', function () {
+		const json = types.object({ foo: types.string })[__values];
+		expect(json).toEqual({ type: 'object', properties: { foo: { type: 'string' } } });
+		expect(typeof json.properties.foo[__values]).toBe('undefined');
 	});
 });

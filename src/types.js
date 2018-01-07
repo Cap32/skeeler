@@ -52,6 +52,23 @@ const aliases = {
 	func: { key: 'instanceof', value: 'Function' },
 };
 
+const getValue = function getValue(value) {
+	if (!value) { return value; }
+
+	if (Array.isArray(value)) {
+		return value.map(getValue);
+	}
+
+	if (typeof value === 'object' && value !== null) {
+		return Object.keys(value).reduce((obj, key) => {
+			obj[key] = getValue(value[key]);
+			return obj;
+		}, {});
+	}
+
+	return value[__state] ? value[__values] : value;
+};
+
 const createTypes = function createTypes(spec = {}) {
 	return new Proxy(spec, {
 		get(target, prop) {
@@ -107,7 +124,7 @@ export default new Proxy({}, {
 		const types = createTypes(Object.defineProperties({}, {
 			[__values]: {
 				get() {
-					return this[__state];
+					return getValue(this[__state]);
 				},
 			},
 			[__state]: {
