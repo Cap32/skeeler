@@ -1,5 +1,6 @@
 
-import { __state, __values } from './symbols';
+import { __state, __values, __isType } from './symbols';
+import getValue from './getValue';
 
 const typeList = [
 	'string',
@@ -50,23 +51,6 @@ const methodsList = [
 
 const aliases = {
 	func: { key: 'instanceof', value: 'Function' },
-};
-
-const getValue = function getValue(value) {
-	if (!value) { return value; }
-
-	if (Array.isArray(value)) {
-		return value.map(getValue);
-	}
-
-	if (typeof value === 'object' && value !== null) {
-		return Object.keys(value).reduce((obj, key) => {
-			obj[key] = getValue(value[key]);
-			return obj;
-		}, {});
-	}
-
-	return value[__state] ? value[__values] : value;
 };
 
 const createTypes = function createTypes(spec = {}) {
@@ -122,14 +106,9 @@ const createTypes = function createTypes(spec = {}) {
 export default new Proxy({}, {
 	get(target, prop) {
 		const types = createTypes(Object.defineProperties({}, {
-			[__values]: {
-				get() {
-					return getValue(this[__state]);
-				},
-			},
-			[__state]: {
-				value: {},
-			},
+			[__values]: { get() { return getValue(this[__state]); } },
+			[__state]: { value: {} },
+			[__isType]: { value: true },
 		}));
 		return types[prop];
 	},
