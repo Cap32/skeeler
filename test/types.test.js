@@ -23,12 +23,12 @@ describe('types', function () {
 	});
 
 	test('array', function () {
-		expect(types.array()).toEqual({ type: 'array', items: [] });
+		expect(types.array()).toEqual({ type: 'array' });
 	});
 
 	test('array with argument', function () {
-		expect(types.array([ types.string ]))
-			.toEqual({ type: 'array', items: [{ type: 'string' }] });
+		expect(types.array(types.string))
+			.toEqual({ type: 'array', items: { type: 'string' } });
 	});
 
 	test('object', function () {

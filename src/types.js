@@ -81,8 +81,8 @@ const createTypes = function createTypes(spec = {}) {
 					};
 				}
 				else if (prop === 'array') {
-					return (items = []) => {
-						setState('items', items);
+					return (items) => {
+						items && setState('items', items);
 						return proxy;
 					};
 				}
