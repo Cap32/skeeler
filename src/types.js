@@ -112,11 +112,12 @@ const createTypes = function createTypes(spec = {}, extensions) {
 export default new Proxy({}, {
 	get(target, prop) {
 		const extensions = getTypeExtensions();
-		const types = createTypes(Object.defineProperties({}, {
+		const spec = Object.defineProperties({}, {
 			[__values]: { get() { return getValue(this[__state]); } },
 			[__state]: { value: {} },
 			[__isType]: { value: true },
-		}), extensions);
+		});
+		const types = createTypes(spec, extensions);
 		return types[prop];
 	},
 });
