@@ -1,4 +1,4 @@
-import jsonPlugin from './jsonPlugin';
+import json from './plugins/json';
 import getValue from './getValue';
 
 const plugins = new Map();
@@ -22,4 +22,4 @@ export default class Skeeler {
 	}
 }
 
-Skeeler.extend({ json: jsonPlugin });
+Skeeler.extend({ json });

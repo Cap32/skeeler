@@ -1,5 +1,5 @@
 import traverse from 'traverse';
-import createPlugin from './createPlugin';
+import createPlugin from '../createPlugin';
 
 export default createPlugin(
 	function toJson(properties) {
