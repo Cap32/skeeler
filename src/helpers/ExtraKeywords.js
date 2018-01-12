@@ -1,7 +1,7 @@
 const extraKeywords = new Map();
 
-export function getExtraKeywords() {
-	return extraKeywords;
+export function getExtraKeyword(key) {
+	return extraKeywords.has(key) ? extraKeywords.get(key) : false;
 }
 
 export function setExtraKeywords(keywords) {
