@@ -1,58 +1,8 @@
 import { __state, __values, __isType } from './symbols';
 import getValue from './getValue';
 import createState from './createState';
+import Keywords from './Keywords';
 import { getTypeExtensions } from './TypeExtensions';
-
-const typeList = [
-	'string',
-	'number',
-	'integer',
-	'boolean',
-	'null',
-	'any',
-	'array',
-	'object',
-];
-
-const boolList = [
-	'required',
-];
-
-const methodsList = [
-	'multipleOf',
-	'maximum',
-	'exclusiveMaximum',
-	'minimum',
-	'exclusiveMinimum',
-	'maxLength',
-	'minLength',
-	'pattern',
-	'additionalItems',
-	'maxItems',
-	'minItems',
-	'uniqueItems',
-	'contains',
-	'maxProperties',
-	'minProperties',
-	'properties',
-	'patternProperties',
-	'additionalProperties',
-	'propertyNames',
-	'enum',
-	'const',
-	'type',
-	'anyOf',
-	'oneOf',
-	'allOf',
-	'not',
-
-	'instanceof',
-	'typeof',
-];
-
-const aliases = {
-	func: { key: 'instanceof', value: 'Function' },
-};
 
 const createTypes = function createTypes(spec = {}, extensions) {
 	return new Proxy(spec, {
@@ -73,37 +23,18 @@ const createTypes = function createTypes(spec = {}, extensions) {
 				return state;
 			}
 
-			if (aliases[prop]) {
-				const alias = aliases[prop];
-				state[alias.key] = alias.value;
-				return state;
-			}
-
-			if (~typeList.indexOf(prop)) {
-				state.type = prop;
-				if (prop === 'object') {
-					return (properties = {}) => {
-						state.properties = properties;
+			const setKeyword = Keywords[prop];
+			if (typeof setKeyword === 'function') {
+				const setterFunc = setKeyword.call(state, prop);
+				if (typeof setterFunc === 'function') {
+					return function setterProxy(value) {
+						setterFunc.call(state, value);
 						return state;
 					};
 				}
-				else if (prop === 'array') {
-					return (items) => {
-						if (items) { state.items = items; }
-						return state;
-					};
-				}
-				return state;
-			}
-			else if (~boolList.indexOf(prop)) {
-				state[prop] = true;
-				return state;
-			}
-			else if (~methodsList.indexOf(prop)) {
-				return (value) => {
-					state[prop] = value;
+				else {
 					return state;
-				};
+				}
 			}
 		},
 	});

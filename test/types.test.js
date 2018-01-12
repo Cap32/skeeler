@@ -32,7 +32,7 @@ describe('setting types', function () {
 	});
 
 	test('object', function () {
-		expect(types.object()).toEqual({ type: 'object', properties: {} });
+		expect(types.object()).toEqual({ type: 'object' });
 	});
 
 	test('object with argument', function () {

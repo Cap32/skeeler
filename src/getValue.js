@@ -1,5 +1,5 @@
 import { __values, __isType } from './symbols';
-import isType from './isType';
+import isType from './helpers/isType';
 import traverse from 'traverse';
 
 export default function getValue(value) {
