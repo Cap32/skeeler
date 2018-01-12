@@ -14,10 +14,10 @@ export default class Skeeler {
 		this.value = getValue(spec);
 	}
 
-	toObject(type = 'json') {
-		const toObject = plugins.get(type);
-		if (toObject) {
-			return toObject(this.value);
+	exports(type = 'json', ...args) {
+		const performExports = plugins.get(type);
+		if (performExports) {
+			return performExports(this.value, ...args);
 		}
 	}
 }

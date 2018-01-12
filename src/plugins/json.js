@@ -1,8 +1,8 @@
 import traverse from 'traverse';
 import createPlugin from '../createPlugin';
 
-export default createPlugin(
-	function toJson(properties) {
+export default createPlugin({
+	toExport: function toJson(properties) {
 		const trav = traverse({ properties });
 		return trav.map(function () {
 			if (this.key === 'required' &&
@@ -19,4 +19,4 @@ export default createPlugin(
 			}
 		});
 	},
-);
+});

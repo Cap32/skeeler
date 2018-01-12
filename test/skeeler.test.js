@@ -6,7 +6,7 @@ describe('skeeler', function () {
 		const skeeler = new Skeeler({
 			foo: types.string,
 		});
-		expect(skeeler.toObject()).toEqual({
+		expect(skeeler.exports()).toEqual({
 			properties: { foo: { type: 'string' } },
 		});
 	});
@@ -17,7 +17,7 @@ describe('skeeler', function () {
 			bar: types.number,
 			baz: types.boolean.required,
 		});
-		expect(skeeler.toObject()).toEqual({
+		expect(skeeler.exports()).toEqual({
 			properties: {
 				foo: { type: 'string' },
 				bar: { type: 'number' },

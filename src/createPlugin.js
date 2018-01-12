@@ -1,6 +1,7 @@
 import { extendType } from './TypeExtensions';
 
-export default function createPlugin(toObject, extendTypes) {
-	if (extendTypes) { extendTypes(extendType); }
-	return toObject;
+export default function createPlugin(options = {}) {
+	const { newTypes, toExport } = options;
+	if (newTypes) { newTypes.forEach(extendType); }
+	return toExport;
 }

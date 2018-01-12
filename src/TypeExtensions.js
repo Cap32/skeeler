@@ -1,10 +1,11 @@
-
 const TypeExtensions = new Map();
 
 export function getTypeExtensions() {
 	return TypeExtensions;
 }
 
-export function extendType(key, extension) {
-	TypeExtensions.set(key, extension);
+export function extendType(newType = {}) {
+	if (newType.key) {
+		TypeExtensions.set(newType.key, newType);
+	}
 }
