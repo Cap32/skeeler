@@ -30,7 +30,9 @@ const mySkeeler = new Skeeler({
     .default([]),
 });
 
-export default mySkeeler;
+const jsonSchema = mySkeeler.exports();
+
+export { jsonSchema };
 ```
 
 ### With Plugins
@@ -45,16 +47,16 @@ Skeeler.extend({
 
 const mySkeeler = new Skeeler({
   foo: types.string.required,
-  bar: types.string.mongoose({ index: true }),
-});
-mySkeeler.mongoose((config, MongooseSchema) => {
-  const schema = new MongooseSchema(config, { timestamps: true });
-  schema.index({ foo: 'text', bar: 'text' });
-  return schema;
+  bar: types.objectId.index(true),
+  baz: types.string.unique,
 });
 
-export default mySkeeler;
-export const mySkeelerMongoose = mySkeeler.toObject('mongoose');
+const jsonSchema = mySkeeler.exports();
+
+const mongooseSchema = mySkeeler.exports('mongoose', { timestamps: true });
+mongooseSchema.index({ foo: 'text', baz: 'text' });
+
+export { jsonSchema, mongooseSchema };
 ```
 
 
