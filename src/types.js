@@ -2,7 +2,7 @@ import { __state, __values, __isType } from './symbols';
 import getValue from './getValue';
 import createState from './createState';
 import Keywords from './Keywords';
-import { getTypeExtensions } from './TypeExtensions';
+import { getExtraKeywords } from './helpers/ExtraKeywords';
 
 const createTypes = function createTypes(spec = {}, extensions) {
 	return new Proxy(spec, {
@@ -42,7 +42,7 @@ const createTypes = function createTypes(spec = {}, extensions) {
 
 export default new Proxy({}, {
 	get(target, prop) {
-		const extensions = getTypeExtensions();
+		const extensions = getExtraKeywords();
 		const spec = Object.defineProperties({}, {
 			[__values]: { get() { return getValue(this[__state]); } },
 			[__state]: { value: {} },
