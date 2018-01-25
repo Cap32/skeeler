@@ -1,11 +1,14 @@
 import traverse from 'traverse';
-import createPlugin from '../createPlugin';
+import createPlugin from '../../createPlugin';
+import keywords from './keywords';
 
 export default createPlugin({
-	toExport: function toJson(properties) {
+	keywords,
+	compile: function toJson(properties) {
 		const trav = traverse({ properties });
 		return trav.map(function () {
-			if (this.key === 'required' &&
+			if (
+				this.key === 'required' &&
 				this.parent &&
 				this.parent.parent &&
 				this.parent.parent.parent &&

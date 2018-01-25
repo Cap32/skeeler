@@ -1,7 +1,6 @@
 import { __state, __values, __isType } from './symbols';
 import getValue from './getValue';
 import createState from './createState';
-import Keywords from './Keywords';
 import { getExtraKeyword } from './helpers/ExtraKeywords';
 
 const createTypes = function createTypes(spec = {}) {
@@ -12,7 +11,7 @@ const createTypes = function createTypes(spec = {}) {
 			}
 
 			const state = createState(createTypes(target));
-			const setKeyword = Keywords[prop] || getExtraKeyword(prop);
+			const setKeyword = getExtraKeyword(prop);
 
 			if (typeof setKeyword === 'function') {
 				const setterFunc = setKeyword.call(state, prop);
@@ -21,8 +20,7 @@ const createTypes = function createTypes(spec = {}) {
 						setterFunc.call(state, value);
 						return state;
 					};
-				}
-				else {
+				} else {
 					return state;
 				}
 			}
@@ -30,14 +28,24 @@ const createTypes = function createTypes(spec = {}) {
 	});
 };
 
-export default new Proxy({}, {
-	get(target, prop) {
-		const spec = Object.defineProperties({}, {
-			[__values]: { get() { return getValue(this[__state]); } },
-			[__state]: { value: {} },
-			[__isType]: { value: true },
-		});
-		const types = createTypes(spec);
-		return types[prop];
-	},
-});
+export default new Proxy(
+	{},
+	{
+		get(target, prop) {
+			const spec = Object.defineProperties(
+				{},
+				{
+					[__values]: {
+						get() {
+							return getValue(this[__state]);
+						},
+					},
+					[__state]: { value: {} },
+					[__isType]: { value: true },
+				}
+			);
+			const types = createTypes(spec);
+			return types[prop];
+		},
+	}
+);

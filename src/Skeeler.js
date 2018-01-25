@@ -4,8 +4,8 @@ import getValue from './getValue';
 const plugins = new Map();
 
 export default class Skeeler {
-	static extend(exts) {
-		Object.keys(exts).forEach((key) => {
+	static use(exts) {
+		Object.keys(exts).forEach(key => {
 			plugins.set(key, exts[key]);
 		});
 	}
@@ -15,11 +15,11 @@ export default class Skeeler {
 	}
 
 	exports(type = 'json', ...args) {
-		const performExports = plugins.get(type);
-		if (performExports) {
-			return performExports(this.value, ...args);
+		const compile = plugins.get(type);
+		if (compile) {
+			return compile(this.value, ...args);
 		}
 	}
 }
 
-Skeeler.extend({ json });
+Skeeler.use({ json });

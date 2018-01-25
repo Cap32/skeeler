@@ -6,6 +6,7 @@ describe('skeeler', function () {
 		const skeeler = new Skeeler({
 			foo: types.string,
 		});
+
 		expect(skeeler.exports()).toEqual({
 			properties: { foo: { type: 'string' } },
 		});

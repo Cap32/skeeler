@@ -1,11 +1,11 @@
-const extraKeywords = new Map();
+const extraKeywords = {};
 
 export function getExtraKeyword(key) {
-	return extraKeywords.has(key) ? extraKeywords.get(key) : false;
+	return extraKeywords[key];
 }
 
 export function setExtraKeywords(keywords) {
-	for (const [key, creater] of keywords) {
-		extraKeywords.set(key, creater);
-	}
+	Object.keys(keywords).forEach(key => {
+		extraKeywords[key] = keywords[key];
+	});
 }

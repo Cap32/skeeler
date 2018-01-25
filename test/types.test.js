@@ -1,3 +1,4 @@
+import '../src/Skeeler';
 import types from '../src/types';
 import { __values } from '../src/symbols';
 
@@ -27,8 +28,10 @@ describe('setting types', function () {
 	});
 
 	test('array with argument', function () {
-		expect(types.array(types.string))
-			.toEqual({ type: 'array', items: { type: 'string' } });
+		expect(types.array(types.string)).toEqual({
+			type: 'array',
+			items: { type: 'string' },
+		});
 	});
 
 	test('object', function () {
@@ -36,8 +39,10 @@ describe('setting types', function () {
 	});
 
 	test('object with argument', function () {
-		expect(types.object({ name: types.string }))
-			.toEqual({ type: 'object', properties: { name: { type: 'string' } } });
+		expect(types.object({ name: types.string })).toEqual({
+			type: 'object',
+			properties: { name: { type: 'string' } },
+		});
 	});
 
 	test('multipleOf', function () {
@@ -45,7 +50,10 @@ describe('setting types', function () {
 	});
 
 	test('chaining', function () {
-		expect(types.number.multipleOf(3)).toEqual({ type: 'number', multipleOf: 3 });
+		expect(types.number.multipleOf(3)).toEqual({
+			type: 'number',
+			multipleOf: 3,
+		});
 	});
 
 	test('typeof', function () {
@@ -80,7 +88,10 @@ describe('getting types values', function () {
 
 	test('object', function () {
 		const json = types.object({ foo: types.string })[__values];
-		expect(json).toEqual({ type: 'object', properties: { foo: { type: 'string' } } });
+		expect(json).toEqual({
+			type: 'object',
+			properties: { foo: { type: 'string' } },
+		});
 		expect(typeof json.properties.foo[__values]).toBe('undefined');
 	});
 });

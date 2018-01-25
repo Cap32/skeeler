@@ -1,6 +1,4 @@
-import {
-	type, array, object, setTrue, setter, func,
-} from './helpers/KeywordCreaters';
+import { type, array, object, setTrue, setter, func } from './helpers';
 
 export default {
 	string: type,
