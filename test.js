@@ -1,7 +1,8 @@
-import { getTypes, isType } from './src';
-import { registerKeywords, clearKeywords } from './src/keywords';
+import Skeeler, { getTypes, isType } from './src';
 import getStacks from './src/getStacks';
 import getValue from './src/getValue';
+import * as plugin from './src/plugin';
+import { registerKeywords, clearKeywords } from './src/keywords';
 
 describe('types', function () {
 	afterEach(() => {
@@ -243,6 +244,58 @@ describe('types', function () {
 				c: { foo: 'quux', bar: 'corge', baz: 'baz' },
 				d: { foo: 'foo', bar: 'bar', baz: 'baz' },
 			});
+		});
+	});
+
+	describe('plugin', function () {
+		test('should add plugin work', function () {
+			const name = 'test';
+			plugin.add(name);
+			const compiler = plugin.getCompiler(name);
+			const value = 'foo';
+			expect(plugin.has(name)).toBe(true);
+			expect(compiler(value)).toBe(value);
+		});
+
+		test('should extend keywords', function () {
+			const name = 'test';
+			const keywords = {
+				foo() {},
+				bar() {},
+			};
+			plugin.add(name, { keywords, compile: () => {} });
+			expect(Object.keys(getTypes())).toEqual(['foo', 'bar']);
+		});
+
+		test('should compiler work', function () {
+			const name = 'test';
+			const compile = jest.fn(() => {});
+			plugin.add(name, { compile });
+			expect(plugin.getCompiler(name)).toBe(compile);
+		});
+	});
+
+	describe('Skeeler', function () {
+		test('should has getTypes function', function () {
+			expect(Skeeler.getTypes).toBe(getTypes);
+		});
+
+		test('should throw error if Skeeler.export without name', function () {
+			const skeeler = new Skeeler();
+			expect(() => skeeler.export()).toThrowError('name is required');
+		});
+
+		test('should throw error if Skeeler.export name not exists', function () {
+			const skeeler = new Skeeler();
+			expect(() => skeeler.export('foo')).toThrowError('"foo" is NOT defined');
+		});
+
+		test('add plugin by using Skeeler.use()', function () {
+			const val = 'foo';
+			const compile = jest.fn(() => val);
+			Skeeler.use({ test: { compile } });
+			const skeeler = new Skeeler();
+			expect(skeeler.export('test')).toBe(val);
 		});
 	});
 });

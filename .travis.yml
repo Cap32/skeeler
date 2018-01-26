@@ -10,3 +10,6 @@ node_js:
 
 notifications:
   email: false
+
+after_script:
+  - yarn coverage
