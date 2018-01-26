@@ -7,11 +7,11 @@
 ```js
 import Skeeler, { types } from 'skeeler';
 import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
-import SkeelerMongoosePlugin from 'skeeler-mongoose-plugin';
+import SkeelerMongoose from 'skeeler-mongoose-plugin';
 
 Skeeler.use({
   json: new SkeelerJSONSchemaV6(),
-  mongoose: new SkeelerMongoosePlugin(),
+  mongoose: new SkeelerMongoose(),
 });
 
 const mySkeeler = new Skeeler({
@@ -21,8 +21,8 @@ const mySkeeler = new Skeeler({
   qux: types.array(types.string),
 });
 
-const jsonSchema = mySkeeler.exports('json');
-const mongooseSchema = mySkeeler.exports('mongoose');
+const jsonSchema = mySkeeler.export('json');
+const mongooseSchema = mySkeeler.export('mongoose');
 
 export { jsonSchema, mongooseSchema };
 ```
@@ -81,11 +81,11 @@ export const mongooseSchema = new Mongoose.Schema({
 ```js
 import Skeeler, { types } from 'skeeler';
 import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
-import SkeelerMongoosePlugin from 'skeeler-mongoose-plugin';
+import SkeelerMongoose from 'skeeler-mongoose-plugin';
 
 Skeeler.use({
   json: new SkeelerJSONSchemaV6(),
-  mongoose: new SkeelerMongoosePlugin(),
+  mongoose: new SkeelerMongoose(),
 });
 
 const mySkeeler = new Skeeler({
@@ -103,9 +103,9 @@ const mySkeeler = new Skeeler({
   waldo: types.anyOf([types.array(types.string), types.string]).default([]),
 });
 
-const jsonSchema = mySkeeler.exports();
+const jsonSchema = mySkeeler.export('json');
 
-const mongooseSchema = mySkeeler.exports('mongoose', { timestamps: true });
+const mongooseSchema = mySkeeler.export('mongoose', { timestamps: true });
 mongooseSchema.index({ foo: 'text', baz: 'text' });
 
 export { jsonSchema, mongooseSchema };
