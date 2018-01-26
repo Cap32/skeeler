@@ -216,5 +216,33 @@ describe('types', function () {
 			const type = types.foo(types.bar(types.baz));
 			expect(getValue(name, type)).toEqual({ foo: { bar: { baz: true } } });
 		});
+
+		test('destructuring assignment should work', function () {
+			const name = 'test';
+			registerKeywords(name, {
+				foo(ctx, value = 'foo') {
+					ctx.state.foo = value;
+				},
+				bar(ctx, value = 'bar') {
+					ctx.state.bar = value;
+				},
+				baz(ctx, value = 'baz') {
+					ctx.state.baz = value;
+				},
+			});
+			const { foo, bar, baz: { bar: { foo: qux } } } = getTypes();
+			const spec = {
+				a: foo.bar,
+				b: bar,
+				c: qux('quux').bar('corge'),
+				d: qux,
+			};
+			expect(getValue(name, spec)).toEqual({
+				a: { foo: 'foo', bar: 'bar' },
+				b: { bar: 'bar' },
+				c: { foo: 'quux', bar: 'corge', baz: 'baz' },
+				d: { foo: 'foo', bar: 'bar', baz: 'baz' },
+			});
+		});
 	});
 });
