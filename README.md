@@ -1,5 +1,7 @@
 # skeeler
 
+[![Build Status](https://travis-ci.org/Cap32/skeeler.svg?branch=master)](https://travis-ci.org/Cap32/skeeler)
+
 [WIP] Define schema magically
 
 ## Simple Example
