@@ -2,7 +2,7 @@ import { registerKeywords } from './keywords';
 
 const compilers = new Map();
 
-const defaultCompile = val => val;
+const defaultCompile = (val) => val;
 
 export function add(name, plugin = {}) {
 	const { keywords, compile = defaultCompile } = plugin;

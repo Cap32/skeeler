@@ -6,9 +6,10 @@ export default class Skeeler {
 	static use(keyOrPlugins, maybeValue) {
 		if (typeof keyOrPlugins === 'string') {
 			plugin.add(keyOrPlugins, maybeValue);
-		} else {
+		}
+		else {
 			const plugins = keyOrPlugins;
-			Object.keys(plugins).forEach(name => {
+			Object.keys(plugins).forEach((name) => {
 				plugin.add(name, plugins[name]);
 			});
 		}

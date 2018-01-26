@@ -11,11 +11,14 @@ export default function getValue(name, value) {
 			const context = { state: {} };
 			stacks.forEach(({ key, args }) => {
 				const fn = keywords.get(key);
+
+				/* istanbul ignore else */
 				if (fn) {
 					context.key = key;
 					context.args = args;
 					fn(context, ...args.map(traverse));
-				} else {
+				}
+				else {
 					console.warn(`keyword "${key}" not found in "${name}"`);
 				}
 			});

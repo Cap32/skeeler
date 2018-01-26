@@ -13,7 +13,7 @@ export function registerKeywords(name, keywords) {
 	/* istanbul ignore else */
 	if (keywords) {
 		const keywordsMap = new Map();
-		Object.keys(keywords).forEach(key => {
+		Object.keys(keywords).forEach((key) => {
 			const keyword = keywords[key];
 			keywordsMap.set(key, keyword);
 			keys.add(key);

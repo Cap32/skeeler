@@ -51,7 +51,7 @@ describe('types', function () {
 			});
 			const types = getTypes();
 			const keys = Object.keys(types);
-			expect(keys.every(key => typeof types[key] === 'function')).toBe(true);
+			expect(keys.every((key) => typeof types[key] === 'function')).toBe(true);
 		});
 
 		test('type methods should return types', function () {

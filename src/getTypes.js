@@ -8,9 +8,9 @@ export default function getTypes() {
 			[__stacks]: { value },
 		};
 
-		const pushStacks = stack => (typeX[__stacks] || []).concat(stack);
+		const pushStacks = (stack) => (typeX[__stacks] || []).concat(stack);
 
-		keys.forEach(key => {
+		keys.forEach((key) => {
 			descriptors[key] = {
 				enumerable: true,
 				get() {
