@@ -8,6 +8,7 @@ export default function getTypes() {
 			[__stacks]: { value },
 		};
 
+		/* istanbul ignore next */
 		const pushStacks = (stack) => (typeX[__stacks] || []).concat(stack);
 
 		keys.forEach((key) => {
