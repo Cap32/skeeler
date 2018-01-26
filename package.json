@@ -23,9 +23,7 @@
   },
   "keywords": [],
   "license": "MIT",
-  "dependencies": {
-    "traverse": "^0.6.6"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
