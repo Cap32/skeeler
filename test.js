@@ -290,7 +290,14 @@ describe('types', function () {
 			expect(() => skeeler.export('foo')).toThrowError('"foo" is NOT defined');
 		});
 
-		test('add plugin by using Skeeler.use()', function () {
+		test('should skeeler.has() work', function () {
+			const name = 'test';
+			Skeeler.use(name);
+			const skeeler = new Skeeler();
+			expect(skeeler.has(name)).toBe(true);
+		});
+
+		test('add plugin by using Skeeler.use(plugins)', function () {
 			const val = 'foo';
 			const compile = jest.fn(() => val);
 			Skeeler.use({ test: { compile } });

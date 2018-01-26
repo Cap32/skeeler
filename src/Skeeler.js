@@ -3,16 +3,26 @@ import getValue from './getValue';
 import * as plugin from './plugin';
 
 export default class Skeeler {
-	static use(plugins) {
-		Object.keys(plugins).forEach(name => {
-			plugin.add(name, plugins[name]);
-		});
+	static use(keyOrPlugins, maybeValue) {
+		if (typeof keyOrPlugins === 'string') {
+			plugin.add(keyOrPlugins, maybeValue);
+		} else {
+			const plugins = keyOrPlugins;
+			Object.keys(plugins).forEach(name => {
+				plugin.add(name, plugins[name]);
+			});
+		}
+		return Skeeler;
 	}
 
 	static getTypes = getTypes;
 
 	constructor(spec = {}) {
 		this._spec = spec;
+	}
+
+	has(name) {
+		return plugin.has(name);
 	}
 
 	export(name, ...args) {

@@ -8,14 +8,13 @@
 ## Simple Example
 
 ```js
-import Skeeler, { types } from 'skeeler';
+import Skeeler from 'skeeler';
 import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
 import SkeelerMongoose from 'skeeler-mongoose-plugin';
 
-Skeeler.use({
-  json: new SkeelerJSONSchemaV6(),
-  mongoose: new SkeelerMongoose(),
-});
+const types = Skeeler.use('json', new SkeelerJSONSchemaV6())
+  .use('mongoose', new SkeelerMongoose())
+  .getTypes();
 
 const mySkeeler = new Skeeler({
   foo: types.string.required.unique,
@@ -82,14 +81,13 @@ export const mongooseSchema = new Mongoose.Schema({
 ## Complex Example
 
 ```js
-import Skeeler, { types } from 'skeeler';
+import Skeeler from 'skeeler';
 import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
 import SkeelerMongoose from 'skeeler-mongoose-plugin';
 
-Skeeler.use({
-  json: new SkeelerJSONSchemaV6(),
-  mongoose: new SkeelerMongoose(),
-});
+const types = Skeeler.use('json', new SkeelerJSONSchemaV6())
+  .use('mongoose', new SkeelerMongoose())
+  .getTypes();
 
 const mySkeeler = new Skeeler({
   foo: types.string.required.unique,
