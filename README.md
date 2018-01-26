@@ -9,10 +9,10 @@
 
 ```js
 import Skeeler from 'skeeler';
-import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
-import SkeelerMongoose from 'skeeler-mongoose-plugin';
+import SkeelerJSONSchemaDraft6 from 'skeeler-json-schema-draft-6';
+import SkeelerMongoose from 'skeeler-mongoose';
 
-const types = Skeeler.use('json', new SkeelerJSONSchemaV6())
+const types = Skeeler.use('json', new SkeelerJSONSchemaDraft6())
   .use('mongoose', new SkeelerMongoose())
   .getTypes();
 
@@ -82,10 +82,10 @@ export const mongooseSchema = new Mongoose.Schema({
 
 ```js
 import Skeeler from 'skeeler';
-import SkeelerJSONSchemaV6 from 'skeeler-json-schema-v6-plugin';
-import SkeelerMongoose from 'skeeler-mongoose-plugin';
+import SkeelerJSONSchemaDraft6 from 'skeeler-json-schema-draft-6';
+import SkeelerMongoose from 'skeeler-mongoose';
 
-const types = Skeeler.use('json', new SkeelerJSONSchemaV6())
+const types = Skeeler.use('json', new SkeelerJSONSchemaDraft6())
   .use('mongoose', new SkeelerMongoose())
   .getTypes();
 
@@ -111,6 +111,10 @@ mongooseSchema.index({ foo: 'text', baz: 'text' });
 
 export { jsonSchema, mongooseSchema };
 ```
+
+## Related Projects
+
+* [skeeler-json-schema-draft-6](https://github.com/Cap32/skeeler-json-schema-draft-6)
 
 ## License
 
