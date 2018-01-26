@@ -1,31 +1,29 @@
-export const type = function type(key) {
-	this.type = key;
+export const type = function type(ctx) {
+	ctx.state.type = ctx.key;
 };
 
-export const array = function array() {
-	this.type = 'array';
-	return function setArray(items) {
-		if (items) { this.items = items; }
-	};
+export const array = function array(ctx, items) {
+	ctx.state.type = 'array';
+	if (Array.isArray(items)) {
+		ctx.state.items = items;
+	}
 };
 
-export const object = function object() {
-	this.type = 'object';
-	return function setObject(properties) {
-		if (properties) { this.properties = properties; }
-	};
+export const object = function object(ctx, properties) {
+	ctx.state.type = 'object';
+	if (typeof properties === 'object') {
+		ctx.state.properties = properties;
+	}
 };
 
-export const setTrue = function setTrue(key) {
-	this[key] = true;
+export const setTrue = function setTrue(ctx, val = true) {
+	ctx.state[ctx.key] = val;
 };
 
-export const setter = function setter(key) {
-	return function setterFunc(value) {
-		this[key] = value;
-	};
+export const setter = function setter(ctx, val) {
+	ctx.state[ctx.key] = val;
 };
 
-export const func = function func() {
-	this.instanceof = 'Function';
+export const func = function func(ctx) {
+	ctx.state.instanceof = 'Function';
 };

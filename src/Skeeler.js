@@ -1,4 +1,4 @@
-import json from './plugins/json';
+import getTypes from './getTypes';
 import getValue from './getValue';
 
 const plugins = new Map();
@@ -10,16 +10,21 @@ export default class Skeeler {
 		});
 	}
 
+	static getTypes = getTypes;
+
 	constructor(spec) {
-		this.value = getValue(spec);
+		this._spec = spec;
 	}
 
-	exports(type = 'json', ...args) {
-		const compile = plugins.get(type);
+	export(name, ...args) {
+		if (!plugins.has(name)) {
+			throw new Error(`"${name}" is NOT defined`);
+		}
+
+		const compile = plugins.get(name);
 		if (compile) {
-			return compile(this.value, ...args);
+			const value = getValue(name, this._spec);
+			return compile(value, ...args);
 		}
 	}
 }
-
-Skeeler.use({ json });
