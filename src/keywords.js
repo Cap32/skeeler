@@ -10,13 +10,16 @@ export function getKeys() {
 }
 
 export function registerKeywords(name, keywords) {
-	const keywordsMap = new Map();
-	Object.keys(keywords).forEach(key => {
-		const keyword = keywords[key];
-		keywordsMap.set(key, keyword);
-		keys.add(key);
-	});
-	stores.set(name, keywordsMap);
+	/* istanbul ignore else */
+	if (keywords) {
+		const keywordsMap = new Map();
+		Object.keys(keywords).forEach(key => {
+			const keyword = keywords[key];
+			keywordsMap.set(key, keyword);
+			keys.add(key);
+		});
+		stores.set(name, keywordsMap);
+	}
 }
 
 export function clearKeywords() {
