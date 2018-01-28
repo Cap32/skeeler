@@ -1,15 +1,15 @@
 const stores = new Map();
 const keys = new Set();
 
-export function getKeywords(name) {
-	return stores.get(name);
+export function getKeywords(target) {
+	return stores.get(target);
 }
 
 export function getKeys() {
 	return keys;
 }
 
-export function registerKeywords(name, keywords) {
+export function registerKeywords(target, keywords) {
 	/* istanbul ignore else */
 	if (keywords) {
 		const keywordsMap = new Map();
@@ -18,7 +18,7 @@ export function registerKeywords(name, keywords) {
 			keywordsMap.set(key, keyword);
 			keys.add(key);
 		});
-		stores.set(name, keywordsMap);
+		stores.set(target, keywordsMap);
 	}
 }
 

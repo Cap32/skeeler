@@ -2,8 +2,8 @@ import getStacks from './getStacks';
 import isType from './isType';
 import { getKeywords } from './keywords';
 
-export default function getValue(name, value) {
-	const keywords = getKeywords(name);
+export default function getValue(target, value) {
+	const keywords = getKeywords(target);
 
 	const traverse = function traverse(value) {
 		if (isType(value)) {
@@ -16,10 +16,11 @@ export default function getValue(name, value) {
 				if (fn) {
 					context.key = key;
 					context.args = args;
+					context.target = target;
 					fn(context, ...args.map(traverse));
 				}
 				else {
-					console.warn(`keyword "${key}" not found in "${name}"`);
+					console.warn(`keyword "${key}" not found in "${target}"`);
 				}
 			});
 			return context.state;
