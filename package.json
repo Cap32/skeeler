@@ -1,6 +1,6 @@
 {
   "name": "skeeler",
-  "description": "Extendable JSON schema defination",
+  "description": "Writing schema magically",
   "version": "0.0.1",
   "main": "lib/index",
   "files": [
@@ -21,7 +21,13 @@
   "engines": {
     "node": ">=4.2.1"
   },
-  "keywords": [],
+  "keywords": [
+    "schema",
+    "keywords",
+    "types",
+    "json",
+    "definition"
+  ],
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {

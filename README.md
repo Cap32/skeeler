@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/Cap32/skeeler.svg?branch=master)](https://travis-ci.org/Cap32/skeeler)
 [![Coverage Status](https://coveralls.io/repos/github/Cap32/skeeler/badge.svg?branch=master)](https://coveralls.io/github/Cap32/skeeler?branch=master)
 
-[WIP] Define schema magically
+[WIP] Writing schema magically
+
+The name is somewhat of a poor choice, but it was available on [npm](https://www.npmjs.com/package/skeeler).
 
 ## Simple Example
 
