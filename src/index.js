@@ -1,5 +1,5 @@
 import Skeeler from './Skeeler';
 
-export isType from './isType';
+export isKeyword from './isKeyword';
 export getTypes from './getTypes';
 export default Skeeler;

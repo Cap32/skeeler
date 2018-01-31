@@ -1,4 +1,4 @@
-import Skeeler, { getTypes, isType } from './src';
+import Skeeler, { getTypes, isKeyword } from './src';
 import getStacks from './src/getStacks';
 import getValue from './src/getValue';
 import * as plugin from './src/plugin';
@@ -13,22 +13,22 @@ describe('types', function () {
 		clearKeywords();
 	});
 
-	describe('isType', function () {
+	describe('isKeyword', function () {
 		test('getTypes() should return true', function () {
 			const types = getTypes();
-			expect(isType(types)).toBe(true);
+			expect(isKeyword(types)).toBe(true);
 		});
 
 		test('plain object should return false', function () {
-			expect(isType({})).toBe(false);
+			expect(isKeyword({})).toBe(false);
 		});
 
 		test('plain function should return false', function () {
-			expect(isType(() => {})).toBe(false);
+			expect(isKeyword(() => {})).toBe(false);
 		});
 	});
 
-	describe('types', function () {
+	describe('keywords / types', function () {
 		test('types props could be extended', function () {
 			addPrivateKeywords('test', {
 				foo() {},
@@ -44,8 +44,8 @@ describe('types', function () {
 				bar() {},
 			});
 			const types = getTypes();
-			expect(isType(types.foo)).toBe(true);
-			expect(isType(types.bar)).toBe(true);
+			expect(isKeyword(types.foo)).toBe(true);
+			expect(isKeyword(types.bar)).toBe(true);
 		});
 
 		test('types props should be functions', function () {
@@ -63,7 +63,7 @@ describe('types', function () {
 				foo() {},
 			});
 			const types = getTypes();
-			expect(isType(types.foo())).toBe(true);
+			expect(isKeyword(types.foo())).toBe(true);
 		});
 
 		test('type methods chaining', function () {
@@ -72,7 +72,7 @@ describe('types', function () {
 				bar() {},
 			});
 			const types = getTypes();
-			expect(isType(types.foo().bar())).toBe(true);
+			expect(isKeyword(types.foo().bar())).toBe(true);
 		});
 
 		test('type props chaining', function () {
@@ -81,7 +81,7 @@ describe('types', function () {
 				bar() {},
 			});
 			const types = getTypes();
-			expect(isType(types.foo.bar)).toBe(true);
+			expect(isKeyword(types.foo.bar)).toBe(true);
 		});
 
 		test('mixing props and methods chaining', function () {
@@ -92,7 +92,7 @@ describe('types', function () {
 				qux() {},
 			});
 			const types = getTypes();
-			expect(isType(types.foo().bar.baz().qux)).toBe(true);
+			expect(isKeyword(types.foo().bar.baz().qux)).toBe(true);
 		});
 
 		test('prop\'s keys shoule equal to method\'s keys', function () {

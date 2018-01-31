@@ -1,5 +1,5 @@
 import getStacks from './getStacks';
-import isType from './isType';
+import isKeyword from './isKeyword';
 import { getPublicKeywords, getPrivateKeywords } from './keywords';
 
 export default function getValue(target, value) {
@@ -11,7 +11,7 @@ export default function getValue(target, value) {
 	};
 
 	const traverse = function traverse(value) {
-		if (isType(value)) {
+		if (isKeyword(value)) {
 			const stacks = getStacks(value);
 			const context = { state: {} };
 			stacks.forEach(({ key, args }) => {

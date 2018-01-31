@@ -1,6 +1,6 @@
 import { __stacks } from './symbols';
-import isType from './isType';
+import isKeyword from './isKeyword';
 
 export default function getStacks(type) {
-	return isType(type) && type[__stacks];
+	return isKeyword(type) && type[__stacks];
 }
