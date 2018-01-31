@@ -1,7 +1,7 @@
 import { __stacks } from './symbols';
 import { getKeys } from './keywords';
 
-export default function getTypes() {
+export default function getKeywords() {
 	const keys = getKeys();
 	const createTypeX = function createTypeX(typeX = {}, value = []) {
 		const descriptors = {

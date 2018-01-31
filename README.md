@@ -16,7 +16,7 @@ import SkeelerMongoose from 'skeeler-mongoose';
 
 const types = Skeeler.use('json', new SkeelerJSONSchemaDraft6())
   .use('mongoose', new SkeelerMongoose())
-  .getTypes();
+  .getKeywords();
 
 const mySkeeler = new Skeeler({
   foo: types.string.required.unique,
@@ -89,7 +89,7 @@ import SkeelerMongoose from 'skeeler-mongoose';
 
 const types = Skeeler.use('json', new SkeelerJSONSchemaDraft6())
   .use('mongoose', new SkeelerMongoose())
-  .getTypes();
+  .getKeywords();
 
 const mySkeeler = new Skeeler({
   foo: types.string.required.unique,

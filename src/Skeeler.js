@@ -1,4 +1,4 @@
-import getTypes from './getTypes';
+import getKeywords from './getKeywords';
 import getValue from './getValue';
 import * as plugin from './plugin';
 import { addPublicKeywords } from './keywords';
@@ -17,10 +17,13 @@ export default class Skeeler {
 		return Skeeler;
 	}
 
-	static addKeywords = addPublicKeywords;
+	static addKeywords(keywords) {
+		addPublicKeywords(keywords);
+		return Skeeler;
+	}
 
-	static getTypes = getTypes;
-	static getKeywords = getTypes;
+	static getTypes = getKeywords;
+	static getKeywords = getKeywords;
 
 	constructor(spec = {}) {
 		this._spec = spec;

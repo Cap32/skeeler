@@ -1,4 +1,4 @@
-import Skeeler, { getTypes, isKeyword } from './src';
+import Skeeler, { getKeywords, isKeyword } from './src';
 import getStacks from './src/getStacks';
 import getValue from './src/getValue';
 import * as plugin from './src/plugin';
@@ -14,8 +14,8 @@ describe('types', function () {
 	});
 
 	describe('isKeyword', function () {
-		test('getTypes() should return true', function () {
-			const types = getTypes();
+		test('getKeywords() should return true', function () {
+			const types = getKeywords();
 			expect(isKeyword(types)).toBe(true);
 		});
 
@@ -34,7 +34,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(Object.keys(types)).toEqual(['foo', 'bar']);
 		});
 
@@ -43,7 +43,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(isKeyword(types.foo)).toBe(true);
 			expect(isKeyword(types.bar)).toBe(true);
 		});
@@ -53,7 +53,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			const keys = Object.keys(types);
 			expect(keys.every((key) => typeof types[key] === 'function')).toBe(true);
 		});
@@ -62,7 +62,7 @@ describe('types', function () {
 			addPrivateKeywords('test', {
 				foo() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(isKeyword(types.foo())).toBe(true);
 		});
 
@@ -71,7 +71,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(isKeyword(types.foo().bar())).toBe(true);
 		});
 
@@ -80,7 +80,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(isKeyword(types.foo.bar)).toBe(true);
 		});
 
@@ -91,7 +91,7 @@ describe('types', function () {
 				baz() {},
 				qux() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(isKeyword(types.foo().bar.baz().qux)).toBe(true);
 		});
 
@@ -99,7 +99,7 @@ describe('types', function () {
 			addPrivateKeywords('test', {
 				foo() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(Object.keys(types.foo)).toEqual(Object.keys(types.foo()));
 		});
 	});
@@ -110,7 +110,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getStacks(types.foo.bar)).toEqual([
 				{ key: 'foo', args: [] },
 				{ key: 'bar', args: [] },
@@ -122,7 +122,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getStacks(types.foo('baz').bar('qux'))).toEqual([
 				{ key: 'foo', args: ['baz'] },
 				{ key: 'bar', args: ['qux'] },
@@ -133,7 +133,7 @@ describe('types', function () {
 			addPrivateKeywords('test', {
 				foo() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getStacks(types.foo)).toEqual(getStacks(types.foo()));
 		});
 	});
@@ -149,7 +149,7 @@ describe('types', function () {
 					ctx.state.bar = 'qux';
 				},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getValue(target, types.foo.bar)).toEqual({
 				foo: 'baz',
 				bar: 'qux',
@@ -167,7 +167,7 @@ describe('types', function () {
 					ctx.state.baz = arg2;
 				},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getValue(target, types.foo('qux').bar('quux', 'corge'))).toEqual({
 				foo: 'qux',
 				bar: 'quux',
@@ -182,7 +182,7 @@ describe('types', function () {
 					ctx.state.foo = value;
 				},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getValue(target, types.foo)).toEqual(
 				getValue(target, types.foo()),
 			);
@@ -199,7 +199,7 @@ describe('types', function () {
 				},
 			});
 
-			const types = getTypes();
+			const types = getKeywords();
 			const type = types.foo([types.bar('baz'), types.bar('qux')]);
 			expect(getValue(target, type)).toEqual({
 				foo: [{ bar: 'baz' }, { bar: 'qux' }],
@@ -219,7 +219,7 @@ describe('types', function () {
 					ctx.state.baz = true;
 				},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			const type = types.foo(types.bar(types.baz));
 			expect(getValue(target, type)).toEqual({ foo: { bar: { baz: true } } });
 		});
@@ -237,7 +237,7 @@ describe('types', function () {
 					ctx.state.baz = value;
 				},
 			});
-			const { foo, bar, baz: { bar: { foo: qux } } } = getTypes();
+			const { foo, bar, baz: { bar: { foo: qux } } } = getKeywords();
 			const spec = {
 				a: foo.bar,
 				b: bar,
@@ -258,7 +258,7 @@ describe('types', function () {
 			const foo = jest.fn();
 			const target = 'test';
 			addPrivateKeywords(target, { foo });
-			getValue(target, getTypes().foo);
+			getValue(target, getKeywords().foo);
 			expect(foo).toHaveBeenCalled();
 		});
 
@@ -266,7 +266,7 @@ describe('types', function () {
 			const foo = jest.fn();
 			const target = 'test';
 			addPrivateKeywords(target, { foo });
-			getValue(target, getTypes().foo);
+			getValue(target, getKeywords().foo);
 			expect(foo.mock.calls[0][0]).toEqual({
 				target,
 				key: 'foo',
@@ -279,7 +279,7 @@ describe('types', function () {
 			const foo = jest.fn();
 			const target = 'test';
 			addPrivateKeywords(target, { foo });
-			getValue(target, getTypes().foo('bar', 'baz'));
+			getValue(target, getKeywords().foo('bar', 'baz'));
 			expect(foo.mock.calls[0][0].args).toEqual(['bar', 'baz']);
 		});
 	});
@@ -301,7 +301,7 @@ describe('types', function () {
 				bar() {},
 			};
 			plugin.add(target, { keywords, compile: () => {} });
-			expect(Object.keys(getTypes())).toEqual(['foo', 'bar']);
+			expect(Object.keys(getKeywords())).toEqual(['foo', 'bar']);
 		});
 
 		test('should compiler work', function () {
@@ -318,7 +318,7 @@ describe('types', function () {
 				foo() {},
 				bar() {},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(Object.keys(types)).toEqual(['foo', 'bar']);
 		});
 
@@ -334,7 +334,7 @@ describe('types', function () {
 					ctx.state.bar = 'qux';
 				},
 			});
-			const types = getTypes();
+			const types = getKeywords();
 			expect(getValue(target, types.foo.bar)).toEqual({
 				foo: 'baz',
 				bar: 'qux',
@@ -344,15 +344,20 @@ describe('types', function () {
 
 	describe('Skeeler', function () {
 		test('should has getKeywords function', function () {
-			expect(Skeeler.getKeywords).toBe(getTypes);
+			expect(Skeeler.getKeywords).toBe(getKeywords);
 		});
 
 		test('getTypes is equal to getKeywords', function () {
 			expect(Skeeler.getTypes).toBe(Skeeler.getKeywords);
 		});
 
-		test('should has addKeywords function', function () {
-			expect(Skeeler.addKeywords).toBe(addPublicKeywords);
+		test('Skeeler.addKeywords(keywords) should work', function () {
+			Skeeler.addKeywords({
+				foo() {},
+				bar() {},
+			});
+			const types = getKeywords();
+			expect(Object.keys(types)).toEqual(['foo', 'bar']);
 		});
 
 		test('should throw error if Skeeler.export without target', function () {
