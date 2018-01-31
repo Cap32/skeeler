@@ -411,6 +411,17 @@ describe('types', function () {
 			const skeeler = new Skeeler();
 			expect(skeeler.export('test')).toBe(val);
 		});
+
+		test('should chaining work', function () {
+			const target = 'test';
+			Skeeler.use(target);
+			const skeeler = new Skeeler();
+			const res = skeeler
+				.chain(target)
+				.modify()
+				.export();
+			expect(res).toEqual({});
+		});
 	});
 
 	describe('modify', function () {
