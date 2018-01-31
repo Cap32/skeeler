@@ -2,7 +2,11 @@ import Skeeler, { getTypes, isType } from './src';
 import getStacks from './src/getStacks';
 import getValue from './src/getValue';
 import * as plugin from './src/plugin';
-import { registerKeywords, clearKeywords } from './src/keywords';
+import {
+	addPrivateKeywords,
+	addPublicKeywords,
+	clearKeywords,
+} from './src/keywords';
 
 describe('types', function () {
 	afterEach(() => {
@@ -26,7 +30,7 @@ describe('types', function () {
 
 	describe('types', function () {
 		test('types props could be extended', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -35,7 +39,7 @@ describe('types', function () {
 		});
 
 		test('types props should be types', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -45,7 +49,7 @@ describe('types', function () {
 		});
 
 		test('types props should be functions', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -55,7 +59,7 @@ describe('types', function () {
 		});
 
 		test('type methods should return types', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 			});
 			const types = getTypes();
@@ -63,7 +67,7 @@ describe('types', function () {
 		});
 
 		test('type methods chaining', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -72,7 +76,7 @@ describe('types', function () {
 		});
 
 		test('type props chaining', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -81,7 +85,7 @@ describe('types', function () {
 		});
 
 		test('mixing props and methods chaining', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 				baz() {},
@@ -92,7 +96,7 @@ describe('types', function () {
 		});
 
 		test('prop\'s keys shoule equal to method\'s keys', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 			});
 			const types = getTypes();
@@ -102,7 +106,7 @@ describe('types', function () {
 
 	describe('stacks', function () {
 		test('getStacks should work', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -114,7 +118,7 @@ describe('types', function () {
 		});
 
 		test('getStacks should work with args', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 				bar() {},
 			});
@@ -126,7 +130,7 @@ describe('types', function () {
 		});
 
 		test('prop\'s stacks shoule equal to method\'s stacks', function () {
-			registerKeywords('test', {
+			addPrivateKeywords('test', {
 				foo() {},
 			});
 			const types = getTypes();
@@ -137,7 +141,7 @@ describe('types', function () {
 	describe('value', function () {
 		test('getValue should work', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx) {
 					ctx.state.foo = 'baz';
 				},
@@ -154,7 +158,7 @@ describe('types', function () {
 
 		test('getValue should work with args', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -173,7 +177,7 @@ describe('types', function () {
 
 		test('default value should work', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx, value = 'bar') {
 					ctx.state.foo = value;
 				},
@@ -184,7 +188,7 @@ describe('types', function () {
 
 		test('array should work', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -202,7 +206,7 @@ describe('types', function () {
 
 		test('getValue nest should work', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -220,7 +224,7 @@ describe('types', function () {
 
 		test('destructuring assignment should work', function () {
 			const name = 'test';
-			registerKeywords(name, {
+			addPrivateKeywords(name, {
 				foo(ctx, value = 'foo') {
 					ctx.state.foo = value;
 				},
@@ -275,9 +279,43 @@ describe('types', function () {
 		});
 	});
 
+	describe('public keywords', function () {
+		test('addPublicKeywords(keywords) should work', function () {
+			addPublicKeywords({
+				foo() {},
+				bar() {},
+			});
+			const types = getTypes();
+			expect(Object.keys(types)).toEqual(['foo', 'bar']);
+		});
+
+		test('publicKeywords should share to private targets', function () {
+			const name = 'test';
+			addPublicKeywords({
+				foo(ctx) {
+					ctx.state.foo = 'baz';
+				},
+			});
+			addPrivateKeywords(name, {
+				bar(ctx) {
+					ctx.state.bar = 'qux';
+				},
+			});
+			const types = getTypes();
+			expect(getValue(name, types.foo.bar)).toEqual({
+				foo: 'baz',
+				bar: 'qux',
+			});
+		});
+	});
+
 	describe('Skeeler', function () {
 		test('should has getTypes function', function () {
 			expect(Skeeler.getTypes).toBe(getTypes);
+		});
+
+		test('should has addKeywords function', function () {
+			expect(Skeeler.addKeywords).toBe(addPublicKeywords);
 		});
 
 		test('should throw error if Skeeler.export without name', function () {

@@ -1,16 +1,21 @@
 import getStacks from './getStacks';
 import isType from './isType';
-import { getKeywords } from './keywords';
+import { getPublicKeywords, getPrivateKeywords } from './keywords';
 
 export default function getValue(target, value) {
-	const keywords = getKeywords(target);
+	const privateKeywords = getPrivateKeywords(target);
+	const publicKeywords = getPublicKeywords();
+
+	const getKeywords = function getKeywords(key) {
+		return privateKeywords.get(key) || publicKeywords.get(key);
+	};
 
 	const traverse = function traverse(value) {
 		if (isType(value)) {
 			const stacks = getStacks(value);
 			const context = { state: {} };
 			stacks.forEach(({ key, args }) => {
-				const fn = keywords.get(key);
+				const fn = getKeywords(key);
 
 				/* istanbul ignore else */
 				if (fn) {

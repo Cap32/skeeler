@@ -1,6 +1,7 @@
 import getTypes from './getTypes';
 import getValue from './getValue';
 import * as plugin from './plugin';
+import { addPublicKeywords } from './keywords';
 
 export default class Skeeler {
 	static use(keyOrPlugins, maybeValue) {
@@ -15,6 +16,8 @@ export default class Skeeler {
 		}
 		return Skeeler;
 	}
+
+	static addKeywords = addPublicKeywords;
 
 	static getTypes = getTypes;
 

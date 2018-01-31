@@ -1,4 +1,4 @@
-import { registerKeywords } from './keywords';
+import { addPrivateKeywords } from './keywords';
 
 const compilers = new Map();
 
@@ -8,7 +8,7 @@ export function add(name, plugin = {}) {
 	const { keywords, compile = defaultCompile } = plugin;
 
 	if (keywords) {
-		registerKeywords(name, keywords);
+		addPrivateKeywords(name, keywords);
 	}
 
 	compilers.set(name, compile);
