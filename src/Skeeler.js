@@ -27,6 +27,13 @@ export default class Skeeler {
 
 	constructor(spec = {}) {
 		this._spec = spec;
+		this._modifiers = new Map();
+	}
+
+	modify(target, modifier) {
+		plugin.validateTarget(target);
+		this._modifiers.set(target, modifier);
+		return this;
 	}
 
 	has(target) {
@@ -34,19 +41,14 @@ export default class Skeeler {
 	}
 
 	export(target, ...args) {
-		if (!target) {
-			throw new Error('target is required');
-		}
-
-		if (!plugin.has(target)) {
-			throw new Error(`"${target}" is NOT defined`);
-		}
+		plugin.validateTarget(target);
 
 		const compile = plugin.getCompiler(target);
 
 		/* istanbul ignore else */
 		if (compile) {
-			const value = getValue(target, this._spec);
+			const modifier = this._modifiers.get(target);
+			const value = getValue(target, this._spec, modifier);
 			return compile(value, ...args);
 		}
 	}

@@ -4,20 +4,30 @@ const compilers = new Map();
 
 const defaultCompile = (val) => val;
 
-export function add(name, plugin = {}) {
+export function add(target, plugin = {}) {
 	const { keywords, compile = defaultCompile } = plugin;
 
 	if (keywords) {
-		addPrivateKeywords(name, keywords);
+		addPrivateKeywords(target, keywords);
 	}
 
-	compilers.set(name, compile);
+	compilers.set(target, compile);
 }
 
-export function has(name) {
-	return compilers.has(name);
+export function has(target) {
+	return compilers.has(target);
 }
 
-export function getCompiler(name) {
-	return compilers.get(name);
+export function getCompiler(target) {
+	return compilers.get(target);
+}
+
+export function validateTarget(target) {
+	if (!target) {
+		throw new Error('"target" is required');
+	}
+
+	if (!has(target)) {
+		throw new Error(`"${target}" is NOT defined`);
+	}
 }

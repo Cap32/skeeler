@@ -272,15 +272,42 @@ describe('types', function () {
 				key: 'foo',
 				state: {},
 				args: [],
+				pointer: '/',
 			});
 		});
 
-		test('context argument should work with arguments', function () {
+		test('context arguments should work ', function () {
 			const foo = jest.fn();
 			const target = 'test';
 			addPrivateKeywords(target, { foo });
 			getValue(target, getKeywords().foo('bar', 'baz'));
 			expect(foo.mock.calls[0][0].args).toEqual(['bar', 'baz']);
+		});
+
+		test('context pointer should work', function () {
+			const keywordFunc = (ctx, arg) => {
+				ctx.state[ctx.key] = arg;
+			};
+			const foo = jest.fn(keywordFunc);
+			const bar = jest.fn(keywordFunc);
+			const baz = jest.fn(keywordFunc);
+			const qux = jest.fn(keywordFunc);
+			const target = 'test';
+			addPrivateKeywords(target, { foo, bar, baz, qux });
+			const types = getKeywords();
+			const spec = {
+				a: types.foo,
+				b: types.bar([
+					types.baz({
+						c: types.qux,
+					}),
+				]),
+			};
+			getValue(target, spec);
+			expect(foo.mock.calls[0][0].pointer).toBe('/a');
+			expect(bar.mock.calls[0][0].pointer).toBe('/b');
+			expect(baz.mock.calls[0][0].pointer).toBe('/b/bar/0');
+			expect(qux.mock.calls[0][0].pointer).toBe('/b/bar/0/baz/c');
 		});
 	});
 
@@ -362,7 +389,7 @@ describe('types', function () {
 
 		test('should throw error if Skeeler.export without target', function () {
 			const skeeler = new Skeeler();
-			expect(() => skeeler.export()).toThrowError('target is required');
+			expect(() => skeeler.export()).toThrowError('"target" is required');
 		});
 
 		test('should throw error if Skeeler.export target not exists', function () {
@@ -379,10 +406,106 @@ describe('types', function () {
 
 		test('add plugin by using Skeeler.use(plugins)', function () {
 			const val = 'foo';
-			const compile = jest.fn(() => val);
+			const compile = () => val;
 			Skeeler.use({ test: { compile } });
 			const skeeler = new Skeeler();
 			expect(skeeler.export('test')).toBe(val);
+		});
+	});
+
+	describe('modify', function () {
+		test('modify should work', function () {
+			const target = 'test';
+			const types = Skeeler.use(target, {
+				keywords: {
+					foo(ctx, arg) {
+						ctx.state.foo = arg;
+					},
+				},
+			}).getKeywords();
+			const skeeler = new Skeeler({ a: types.foo('bar') });
+			skeeler.modify(target, { '/a': types.foo('qux') });
+			expect(skeeler.export(target)).toEqual({ a: { foo: 'qux' } });
+		});
+
+		test('modify with deep pointer should work', function () {
+			const target = 'test';
+			const keywordFunc = (ctx, arg) => {
+				ctx.state[ctx.key] = arg;
+			};
+			const types = Skeeler.use(target, {
+				keywords: {
+					foo: keywordFunc,
+					bar: keywordFunc,
+					baz: keywordFunc,
+				},
+			}).getKeywords();
+			const skeeler = new Skeeler({
+				a: types.foo({
+					b: types.bar([types.baz('qux')]),
+					c: types.foo('corge'),
+					d: types.foo('grault'),
+				}),
+			});
+			skeeler.modify(target, {
+				'/a/foo/b/bar/0': types.baz('quux'),
+				'/a/foo/d': types.bar('garply'),
+			});
+			expect(skeeler.export(target)).toEqual({
+				a: {
+					foo: {
+						b: {
+							bar: [
+								{
+									baz: 'quux',
+								},
+							],
+						},
+						c: {
+							foo: 'corge',
+						},
+						d: {
+							bar: 'garply',
+						},
+					},
+				},
+			});
+		});
+
+		test('modify should remove `undefined` keys', function () {
+			const target = 'test';
+			const types = Skeeler.use(target, {
+				keywords: {
+					foo(ctx, arg) {
+						ctx.state.foo = arg;
+					},
+				},
+			}).getKeywords();
+			const skeeler = new Skeeler({
+				a: types.foo('foo'),
+				b: types.foo([types.foo('bar'), types.foo('baz')]),
+				c: types.foo('qux'),
+			});
+			skeeler.modify(target, {
+				'/a': undefined,
+				'/b/foo/1': undefined,
+				'/c/foo': undefined,
+			});
+			const res = skeeler.export(target);
+			expect(res.hasOwnProperty('a')).toBe(false);
+			expect(res.b.foo.hasOwnProperty('1')).toBe(false);
+			expect(res.c.hasOwnProperty('foo')).toBe(false);
+		});
+
+		test('modify should return `undefined` if "/" is `undefined`', function () {
+			const target = 'test';
+			const skeeler = new Skeeler({
+				a: 'foo',
+			});
+			skeeler.modify(target, {
+				'/': undefined,
+			});
+			expect(skeeler.export(target)).toBe(undefined);
 		});
 	});
 });
