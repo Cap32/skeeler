@@ -10,8 +10,8 @@ export default class Skeeler {
 		}
 		else {
 			const plugins = keyOrPlugins;
-			Object.keys(plugins).forEach((name) => {
-				plugin.add(name, plugins[name]);
+			Object.keys(plugins).forEach((target) => {
+				plugin.add(target, plugins[target]);
 			});
 		}
 		return Skeeler;
@@ -26,24 +26,24 @@ export default class Skeeler {
 		this._spec = spec;
 	}
 
-	has(name) {
-		return plugin.has(name);
+	has(target) {
+		return plugin.has(target);
 	}
 
-	export(name, ...args) {
-		if (!name) {
-			throw new Error('name is required');
+	export(target, ...args) {
+		if (!target) {
+			throw new Error('target is required');
 		}
 
-		if (!plugin.has(name)) {
-			throw new Error(`"${name}" is NOT defined`);
+		if (!plugin.has(target)) {
+			throw new Error(`"${target}" is NOT defined`);
 		}
 
-		const compile = plugin.getCompiler(name);
+		const compile = plugin.getCompiler(target);
 
 		/* istanbul ignore else */
 		if (compile) {
-			const value = getValue(name, this._spec);
+			const value = getValue(target, this._spec);
 			return compile(value, ...args);
 		}
 	}

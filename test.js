@@ -140,8 +140,8 @@ describe('types', function () {
 
 	describe('value', function () {
 		test('getValue should work', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx) {
 					ctx.state.foo = 'baz';
 				},
@@ -150,15 +150,15 @@ describe('types', function () {
 				},
 			});
 			const types = getTypes();
-			expect(getValue(name, types.foo.bar)).toEqual({
+			expect(getValue(target, types.foo.bar)).toEqual({
 				foo: 'baz',
 				bar: 'qux',
 			});
 		});
 
 		test('getValue should work with args', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -168,7 +168,7 @@ describe('types', function () {
 				},
 			});
 			const types = getTypes();
-			expect(getValue(name, types.foo('qux').bar('quux', 'corge'))).toEqual({
+			expect(getValue(target, types.foo('qux').bar('quux', 'corge'))).toEqual({
 				foo: 'qux',
 				bar: 'quux',
 				baz: 'corge',
@@ -176,19 +176,21 @@ describe('types', function () {
 		});
 
 		test('default value should work', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx, value = 'bar') {
 					ctx.state.foo = value;
 				},
 			});
 			const types = getTypes();
-			expect(getValue(name, types.foo)).toEqual(getValue(name, types.foo()));
+			expect(getValue(target, types.foo)).toEqual(
+				getValue(target, types.foo()),
+			);
 		});
 
 		test('array should work', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -199,14 +201,14 @@ describe('types', function () {
 
 			const types = getTypes();
 			const type = types.foo([types.bar('baz'), types.bar('qux')]);
-			expect(getValue(name, type)).toEqual({
+			expect(getValue(target, type)).toEqual({
 				foo: [{ bar: 'baz' }, { bar: 'qux' }],
 			});
 		});
 
 		test('getValue nest should work', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx, value) {
 					ctx.state.foo = value;
 				},
@@ -219,12 +221,12 @@ describe('types', function () {
 			});
 			const types = getTypes();
 			const type = types.foo(types.bar(types.baz));
-			expect(getValue(name, type)).toEqual({ foo: { bar: { baz: true } } });
+			expect(getValue(target, type)).toEqual({ foo: { bar: { baz: true } } });
 		});
 
 		test('destructuring assignment should work', function () {
-			const name = 'test';
-			addPrivateKeywords(name, {
+			const target = 'test';
+			addPrivateKeywords(target, {
 				foo(ctx, value = 'foo') {
 					ctx.state.foo = value;
 				},
@@ -242,7 +244,7 @@ describe('types', function () {
 				c: qux('quux').bar('corge'),
 				d: qux,
 			};
-			expect(getValue(name, spec)).toEqual({
+			expect(getValue(target, spec)).toEqual({
 				a: { foo: 'foo', bar: 'bar' },
 				b: { bar: 'bar' },
 				c: { foo: 'quux', bar: 'corge', baz: 'baz' },
@@ -254,19 +256,19 @@ describe('types', function () {
 	describe('keyword function', function () {
 		test('keyword function should be called', function () {
 			const foo = jest.fn();
-			const name = 'test';
-			addPrivateKeywords(name, { foo });
-			getValue(name, getTypes().foo);
+			const target = 'test';
+			addPrivateKeywords(target, { foo });
+			getValue(target, getTypes().foo);
 			expect(foo).toHaveBeenCalled();
 		});
 
 		test('context argument should work', function () {
 			const foo = jest.fn();
-			const name = 'test';
-			addPrivateKeywords(name, { foo });
-			getValue(name, getTypes().foo);
+			const target = 'test';
+			addPrivateKeywords(target, { foo });
+			getValue(target, getTypes().foo);
 			expect(foo.mock.calls[0][0]).toEqual({
-				target: name,
+				target,
 				key: 'foo',
 				state: {},
 				args: [],
@@ -275,38 +277,38 @@ describe('types', function () {
 
 		test('context argument should work with arguments', function () {
 			const foo = jest.fn();
-			const name = 'test';
-			addPrivateKeywords(name, { foo });
-			getValue(name, getTypes().foo('bar', 'baz'));
+			const target = 'test';
+			addPrivateKeywords(target, { foo });
+			getValue(target, getTypes().foo('bar', 'baz'));
 			expect(foo.mock.calls[0][0].args).toEqual(['bar', 'baz']);
 		});
 	});
 
 	describe('plugin', function () {
 		test('should add plugin work', function () {
-			const name = 'test';
-			plugin.add(name);
-			const compiler = plugin.getCompiler(name);
+			const target = 'test';
+			plugin.add(target);
+			const compiler = plugin.getCompiler(target);
 			const value = 'foo';
-			expect(plugin.has(name)).toBe(true);
+			expect(plugin.has(target)).toBe(true);
 			expect(compiler(value)).toBe(value);
 		});
 
 		test('should extend keywords', function () {
-			const name = 'test';
+			const target = 'test';
 			const keywords = {
 				foo() {},
 				bar() {},
 			};
-			plugin.add(name, { keywords, compile: () => {} });
+			plugin.add(target, { keywords, compile: () => {} });
 			expect(Object.keys(getTypes())).toEqual(['foo', 'bar']);
 		});
 
 		test('should compiler work', function () {
-			const name = 'test';
+			const target = 'test';
 			const compile = jest.fn(() => {});
-			plugin.add(name, { compile });
-			expect(plugin.getCompiler(name)).toBe(compile);
+			plugin.add(target, { compile });
+			expect(plugin.getCompiler(target)).toBe(compile);
 		});
 	});
 
@@ -321,19 +323,19 @@ describe('types', function () {
 		});
 
 		test('publicKeywords should share to private targets', function () {
-			const name = 'test';
+			const target = 'test';
 			addPublicKeywords({
 				foo(ctx) {
 					ctx.state.foo = 'baz';
 				},
 			});
-			addPrivateKeywords(name, {
+			addPrivateKeywords(target, {
 				bar(ctx) {
 					ctx.state.bar = 'qux';
 				},
 			});
 			const types = getTypes();
-			expect(getValue(name, types.foo.bar)).toEqual({
+			expect(getValue(target, types.foo.bar)).toEqual({
 				foo: 'baz',
 				bar: 'qux',
 			});
@@ -353,21 +355,21 @@ describe('types', function () {
 			expect(Skeeler.addKeywords).toBe(addPublicKeywords);
 		});
 
-		test('should throw error if Skeeler.export without name', function () {
+		test('should throw error if Skeeler.export without target', function () {
 			const skeeler = new Skeeler();
-			expect(() => skeeler.export()).toThrowError('name is required');
+			expect(() => skeeler.export()).toThrowError('target is required');
 		});
 
-		test('should throw error if Skeeler.export name not exists', function () {
+		test('should throw error if Skeeler.export target not exists', function () {
 			const skeeler = new Skeeler();
 			expect(() => skeeler.export('foo')).toThrowError('"foo" is NOT defined');
 		});
 
 		test('should skeeler.has() work', function () {
-			const name = 'test';
-			Skeeler.use(name);
+			const target = 'test';
+			Skeeler.use(target);
 			const skeeler = new Skeeler();
-			expect(skeeler.has(name)).toBe(true);
+			expect(skeeler.has(target)).toBe(true);
 		});
 
 		test('add plugin by using Skeeler.use(plugins)', function () {
