@@ -310,8 +310,12 @@ describe('types', function () {
 	});
 
 	describe('Skeeler', function () {
-		test('should has getTypes function', function () {
-			expect(Skeeler.getTypes).toBe(getTypes);
+		test('should has getKeywords function', function () {
+			expect(Skeeler.getKeywords).toBe(getTypes);
+		});
+
+		test('getTypes is equal to getKeywords', function () {
+			expect(Skeeler.getTypes).toBe(Skeeler.getKeywords);
 		});
 
 		test('should has addKeywords function', function () {

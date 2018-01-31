@@ -20,6 +20,7 @@ export default class Skeeler {
 	static addKeywords = addPublicKeywords;
 
 	static getTypes = getTypes;
+	static getKeywords = getTypes;
 
 	constructor(spec = {}) {
 		this._spec = spec;
