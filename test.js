@@ -251,6 +251,37 @@ describe('types', function () {
 		});
 	});
 
+	describe('keyword function', function () {
+		test('keyword function should be called', function () {
+			const foo = jest.fn();
+			const name = 'test';
+			addPrivateKeywords(name, { foo });
+			getValue(name, getTypes().foo);
+			expect(foo).toHaveBeenCalled();
+		});
+
+		test('context argument should work', function () {
+			const foo = jest.fn();
+			const name = 'test';
+			addPrivateKeywords(name, { foo });
+			getValue(name, getTypes().foo);
+			expect(foo.mock.calls[0][0]).toEqual({
+				target: name,
+				key: 'foo',
+				state: {},
+				args: [],
+			});
+		});
+
+		test('context argument should work with arguments', function () {
+			const foo = jest.fn();
+			const name = 'test';
+			addPrivateKeywords(name, { foo });
+			getValue(name, getTypes().foo('bar', 'baz'));
+			expect(foo.mock.calls[0][0].args).toEqual(['bar', 'baz']);
+		});
+	});
+
 	describe('plugin', function () {
 		test('should add plugin work', function () {
 			const name = 'test';
