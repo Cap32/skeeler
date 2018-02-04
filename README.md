@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/Cap32/skeeler.svg?branch=master)](https://travis-ci.org/Cap32/skeeler)
 [![Coverage Status](https://coveralls.io/repos/github/Cap32/skeeler/badge.svg?branch=master)](https://coveralls.io/github/Cap32/skeeler?branch=master)
 
-[WIP] Writing schema magically
+Writing schema magically
 
 The name is somewhat of a poor choice, but it was available on [npm](https://www.npmjs.com/package/skeeler).
 
@@ -117,6 +117,7 @@ export { jsonSchema, mongooseSchema };
 ## Related Projects
 
 * [skeeler-json-schema-draft-6](https://github.com/Cap32/skeeler-json-schema-draft-6)
+* [skeeler-mongoose](https://github.com/Cap32/skeeler-mongoose)
 
 ## License
 
